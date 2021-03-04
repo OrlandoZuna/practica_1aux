@@ -1,8 +1,6 @@
 import UserModel from "../models/userModel.js";
-import RolesModel from "../models/rolesModel.js";
 import Sha1 from "sha1";
 import empty from "is-empty";
-var roles = new RolesModel();
 var USER = new UserModel();
 class UserController {
   constructor() {}
@@ -17,11 +15,8 @@ class UserController {
     }
     var result = await USER.createUser(
       data.name,
-      data.lastname,
       data.email,
       Sha1(data.password),
-      new Date(),
-      data.age
     );
     response.status(200).json(result);
   }
@@ -40,19 +35,6 @@ class UserController {
     var id = request.params.id;
     var result = await USER.deleteUser(id);
     response.status(200).json(result);
-  }
-  async addRol(req, res) {
-    var body = req.body;
-    var idrol = body.idrol;
-    var idus = body.idus;
-    var filter = { _id: idrol };
-    var rolresult = await roles.getRol(filter);
-    if (rolresult.length == 1) {
-      var result = await USER.addRol(idus, rolresult[0]);
-      res.status(200).json({ serverResponse: result });
-      return;
-    }
-    res.status(200).json({ serverResponse: "EL rol no pudo se asignado" });
   }
   async uploadAvatar(req, res) {
     var id = req.params.id;
@@ -77,7 +59,7 @@ class UserController {
             .json({ serverResponse: "ERROR AL COPIAR LA IMAGEN", error: err });
           return;
         }
-      });
+      });   
       var obj = {};
       obj["uriAvatar"] = `/showavatar/${totalname}`;
       obj["directorypath"] = toalpath;

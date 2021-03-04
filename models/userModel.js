@@ -1,13 +1,12 @@
 import mongoose from "../connection/connect.js";
 import modelenum from "../utils/enumModel.js";
-import RolesModel from "./rolesModel.js";
+
 class UserModel {
   constructor() {
-    var roles = new RolesModel();
     this.Schema = mongoose.Schema;
     this.UserSchema = new this.Schema({
       name: String,
-      lastname: String,
+
       fotosPerfil: [
         {
           uriAvatar: String, //la ruta de la imagen para http
@@ -26,12 +25,7 @@ class UserModel {
         },
       },
       password: String,
-      registerDate: Date,
-      age: {
-        type: Number,
-        min: 18,
-      },
-      roles: [roles.getSchema()],
+      
     });
     //Ingresamos a llamar a la funcion model
     //this.mymodel = mongoose.model("users", this.UserSchema);
@@ -45,15 +39,12 @@ class UserModel {
   /* 
   C. create
   */
-  createUser(name, lastname, email, password, registerdate, age) {
+  createUser(name, email, password) {
     var user = {
       name,
-      lastname,
+      
       email,
       password,
-      registerdate,
-      age,
-      roles: [],
     };
     var newuser = new this.mymodel(user);
     // aqui viene la validacion
@@ -132,13 +123,7 @@ class UserModel {
     }
     return false;
   }
-  async addRol(id, rol) {
-    var result = await this.mymodel.update(
-      { _id: id },
-      { $push: { roles: rol } }
-    );
-    return result;
-  }
+// aqui se introduce la foto del user//
   async updateAvatar(id, obj) {
     var result = await this.mymodel.update(
       { _id: id },
